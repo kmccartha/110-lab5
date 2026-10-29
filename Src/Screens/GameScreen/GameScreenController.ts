@@ -14,6 +14,7 @@ export class GameScreenController extends ScreenController {
 	private gameTimer: number | null = null;
 
 	private squeezeSound: HTMLAudioElement;
+	
 
 	constructor(screenSwitcher: ScreenSwitcher) {
 		super();
@@ -23,7 +24,7 @@ export class GameScreenController extends ScreenController {
 		this.view = new GameScreenView(() => this.handleLemonClick());
 
 		// TODO: Task 4 - Initialize squeeze sound audio
-		this.squeezeSound = new Audio(); // Placeholder
+		this.squeezeSound = new Audio('/squeeze.mp3'); // Placeholder
 	}
 
 	/**
@@ -46,6 +47,17 @@ export class GameScreenController extends ScreenController {
 	 */
 	private startTimer(): void {
 		// TODO: Task 3 - Implement countdown timer using setInterval
+		let timeRemaining = GAME_DURATION;
+
+    	this.gameTimer = window.setInterval(() => {
+			timeRemaining--;
+
+			this.view.updateTimer(timeRemaining);
+
+			if (timeRemaining <= 0) {
+				this.endGame();
+			}
+		}, 1000);
 	}
 
 	/**
@@ -53,6 +65,10 @@ export class GameScreenController extends ScreenController {
 	 */
 	private stopTimer(): void {
 		// TODO: Task 3 - Stop the timer using clearInterval
+		if (this.gameTimer !== null) {
+			clearInterval(this.gameTimer);
+			this.gameTimer = null;
+		}
 	}
 
 	/**
@@ -67,6 +83,9 @@ export class GameScreenController extends ScreenController {
 		this.view.randomizeLemonPosition();
 
 		// TODO: Task 4 - Play the squeeze sound
+		this.squeezeSound.currentTime = 0;
+    	this.squeezeSound.play();
+
 	}
 
 	/**
